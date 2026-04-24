@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+
+def evaluate_classification(X, y, dataset_name):
+
+    print("\n====================================")
+    print("Dataset:", dataset_name)
+    print("====================================")
+
+    # Split dataset
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42
+    )
+
+    # ID3 → entropy criterion
+    model = DecisionTreeClassifier(criterion="entropy", random_state=42)
+
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='weighted')
+    recall = recall_score(y_test, y_pred, average='weighted')
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    cm = confusion_matrix(y_test, y_pred)
+
+    print("Accuracy:", accuracy)
+    print("Precision:", precision)
+    print("Recall:", recall)
+    print("F1 Score:", f1)
+
+    print("\nConfusion Matrix:")
+    print(cm)
+
+
+# -------------------------------
+# Dataset 1: CSV File 1
+# -------------------------------
+data1 = pd.read_csv("dataset1.csv")
+
+X1 = data1.iloc[:, :-1].values   # features
+y1 = data1.iloc[:, -1].values    # target
+
+evaluate_classification(X1, y1, "Dataset 1 (CSV)")
+
+
+# -------------------------------
+# Dataset 2: CSV File 2
+# -------------------------------
+data2 = pd.read_csv("dataset2.csv")
+
+X2 = data2.iloc[:, :-1].values
+y2 = data2.iloc[:, -1].values
+
+evaluate_classification(X2, y2, "Dataset 2 (CSV)")
